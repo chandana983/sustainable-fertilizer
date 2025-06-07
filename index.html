@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Fertilizer Usage Optimizer</title>
+
+
+</head>
+<body>
+<style>
+  
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f5f9f4;
+  margin: 0;
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Header Styles */
+#title {
+  color: #2c5e1a;
+  text-align: center;
+  margin: 20px 0;
+  font-size: 2.2em;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  padding-bottom: 10px;
+  border-bottom: 2px solid #4CAF50;
+}
+
+/* Form Styles */
+#fertilizerForm {
+  background-color: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+#fertilizerForm label {
+  display: block;
+  margin: 15px 0 5px;
+  font-weight: 600;
+  color: #2c5e1a;
+  font-size: 1.1em;
+}
+
+#fertilizerForm select, 
+#fertilizerForm input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s;
+}
+
+#fertilizerForm select:focus, 
+#fertilizerForm input:focus {
+  border-color: #4CAF50;
+  outline: none;
+  background-color: #fff;
+}
+
+#fertilizerForm button[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 25px;
+  transition: background-color 0.3s;
+  font-weight: bold;
+}
+
+#fertilizerForm button[type="submit"]:hover {
+  background-color: #3e8e41;
+}
+
+/* Recommendation Styles */
+#recommendation {
+  background-color: #e8f5e9;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 5px solid #4CAF50;
+  margin-top: 20px;
+}
+
+#recommendation h3 {
+  color: #2c5e1a;
+  margin-top: 0;
+}
+
+#recommendation ul {
+  padding-left: 20px;
+}
+
+#recommendation li {
+  margin-bottom: 8px;
+  font-size: 1.1em;
+}
+
+/* Language Toggle */
+.lang-toggle {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+#toggleLangBtn {
+  background-color: #f1f8e9;
+  color: #2c5e1a;
+  border: 1px solid #4CAF50;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+#toggleLangBtn:hover {
+  background-color: #4CAF50;
+  color: white;
+}
+
+/* Result Container */
+.result-container {
+  display: none; /* Hidden by default, shown when there's a result */
+  background-color: #e8f5e9;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 5px solid #4CAF50;
+}
+
+.recommendation {
+  font-size: 1.1em;
+  line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  
+  #title {
+    font-size: 1.8em;
+  }
+  
+  #fertilizerForm {
+    padding: 15px;
+  }
+}
+
+/* Highlight important information */
+b {
+  color: #2c5e1a;
+}
+
+em {
+  color: #666;
+  font-size: 0.9em;
+}
+
+/* Dropdown arrow styling */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232c5e1a'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+}
+
+</style>
+<div class="lang-toggle">
+  <button id="toggleLangBtn">తెలుగులోకి మార్చండి (Switch to Telugu)</button>
+</div>
+<div class="result-container">
+  <div class="recommendation">
+    <div class="eng-text">
+      Recommended Fertilizer: Use 50 kg of Urea and 30 kg of DAP per acre.
+    </div>
+    <div class="telugu-text">
+      సిఫార్సు చేసిన ఎరువు: ఒక ఎకరాకు 50 కిలోల యూరియా మరియు 30 కిలోల డీఏపీ ఉపయోగించండి.
+    </div>
+  </div>
+</div>
+
+<h1 id="title">🌱 Fertilizer Usage Optimizer</h1>
+
+<form id="fertilizerForm">
+  <label for="crop" id="labelCrop">Select Crop:</label>
+  <select id="crop" name="crop" required>
+    <option value="" data-en="--Choose Crop--" data-te="--పంటను ఎంచుకోండి--">--Choose Crop--</option>
+    <option value="Wheat" data-en="Wheat" data-te="గోధుమ">Wheat</option>
+    <option value="Rice" data-en="Rice" data-te="అన్నం">Rice</option>
+    <option value="Maize" data-en="Maize" data-te="మొక్కజొన్న">Maize</option>
+    <option value="Cotton" data-en="Cotton" data-te="పత్తి">Cotton</option>
+    <option value="Groundnut" data-en="Groundnut" data-te="వేరుశనగ">Groundnut</option>
+    <option value="Sugarcane" data-en="Sugarcane" data-te="చెక్కరుకంద">Sugarcane</option>
+    <option value="Soybean" data-en="Soybean" data-te="సోయాబీన్">Soybean</option>
+    <option value="Chilli" data-en="Chilli" data-te="మిరప">Chilli</option>
+    <option value="Turmeric" data-en="Turmeric" data-te="పసుపు">Turmeric</option>
+    <option value="Onion" data-en="Onion" data-te="ఉల్లిపాయ">Onion</option>
+  </select>
+
+  <label for="soil" id="labelSoil">Select Soil Type:</label>
+  <select id="soil" name="soil" required>
+    <option value="" data-en="--Choose Soil--" data-te="--మట్టిని ఎంచుకోండి--">--Choose Soil--</option>
+    <option value="Clay" data-en="Clay" data-te="మట్టి">Clay</option>
+    <option value="Sandy" data-en="Sandy" data-te="మైదానమట్టి">Sandy</option>
+    <option value="Loamy" data-en="Loamy" data-te="ఉప్పొంగిన మట్టి">Loamy</option>
+    <option value="Black" data-en="Black Soil" data-te="కృష్ణ మట్టి">Black Soil</option>
+    <option value="Red" data-en="Red Soil" data-te="ఎరుపు మట్టి">Red Soil</option>
+    <option value="Alluvial" data-en="Alluvial Soil" data-te="నది తీరపు మట్టి">Alluvial Soil</option>
+  </select>
+
+  <label for="acres" id="labelAcres">Acres of Land:</label>
+  <input id="acres" name="acres" type="number" min="1" max="100" placeholder="Enter acres of land" required />
+
+  <label for="district" id="labelDistrict">District:</label>
+  <select id="district" name="district" required>
+    <option value="" data-en="-- Select District --" data-te="--జిల్లాను ఎంచుకోండి--">-- Select District --</option>
+    <option value="Anantapur" data-en="Anantapur" data-te="అనంతపురం">Anantapur</option>
+    <option value="Chittoor" data-en="Chittoor" data-te="చిత్తూరు">Chittoor</option>
+    <option value="East Godavari" data-en="East Godavari" data-te="తూర్పు గోదావరి">East Godavari</option>
+    <option value="Guntur" data-en="Guntur" data-te="గుంటూరు">Guntur</option>
+    <option value="Kadapa" data-en="Kadapa" data-te="కడప">Kadapa</option>
+    <option value="Krishna" data-en="Krishna" data-te="కృష్ణ">Krishna</option>
+    <option value="Kurnool" data-en="Kurnool" data-te="కర్నూల్">Kurnool</option>
+    <option value="Nellore" data-en="Nellore" data-te="నెల్లూరు">Nellore</option>
+    <option value="Prakasam" data-en="Prakasam" data-te="ప్రకాశం">Prakasam</option>
+    <option value="Srikakulam" data-en="Srikakulam" data-te="శ్రీకాకుళం">Srikakulam</option>
+    <option value="Visakhapatnam" data-en="Visakhapatnam" data-te="విశాఖపట్నం">Visakhapatnam</option>
+    <option value="Vizianagaram" data-en="Vizianagaram" data-te="విజయనగరం">Vizianagaram</option>
+    <option value="West Godavari" data-en="West Godavari" data-te="పడమటి గోదావరి">West Godavari</option>
+  </select>
+
+  <label for="state" id="labelState">State:</label>
+  <select id="state" name="state" required>
+    <option value="" data-en="--Choose State--" data-te="--రాష్ట్రం ఎంచుకోండి--">--Choose State--</option>
+    <option value="Andhra Pradesh" data-en="Andhra Pradesh" data-te="ఆంధ్రప్రదేశ్">Andhra Pradesh</option>
+    <option value="Telangana" data-en="Telangana" data-te="తెలంగాణ">Telangana</option>
+    <option value="Tamil Nadu" data-en="Tamil Nadu" data-te="తమిళనాడు">Tamil Nadu</option>
+  </select>
+
+  <button type="submit" id="submitBtn">Get Recommendation</button>
+</form>
+
+<div id="recommendation"></div>
+
+<script>
+const fertilizerData = {
+  Wheat: {
+    Clay: {
+      en: "Urea: 50kg, DAP: 40kg",
+      te: "యూరియా: 50కిలో, డ్యాప్: 40కిలో"
+    },
+    Sandy: {
+      en: "Urea: 45kg, Potash: 35kg",
+      te: "యూరియా: 45కిలో, పొటాష్: 35కిలో"
+    },
+    Loamy: {
+      en: "Urea: 48kg, DAP: 42kg",
+      te: "యూరియా: 48కిలో, డ్యాప్: 42కిలో"
+    },
+    Black: {
+      en: "Urea: 52kg, Potash: 45kg",
+      te: "యూరియా: 52కిలో, పొటాష్: 45కిలో"
+    },
+    Red: {
+      en: "Urea: 50kg, DAP: 38kg",
+      te: "యూరియా: 50కిలో, డ్యాప్: 38కిలో"
+    },
+    Alluvial: {
+      en: "Urea: 49kg, Potash: 40kg",
+      te: "యూరియా: 49కిలో, పొటాష్: 40కిలో"
+    }
+  },
+  Rice: {
+    Clay: {
+      en: "Nitrogen: 60kg, Phosphorus: 50kg",
+      te: "నైట్రోజన్: 60కిలో, ఫాస్ఫరస్: 50కిలో"
+    },
+    Sandy: {
+      en: "Nitrogen: 55kg, Potassium: 45kg",
+      te: "నైట్రోజన్: 55కిలో, పొటాషియం: 45కిలో"
+    },
+    Loamy: {
+      en: "Nitrogen: 58kg, Phosphorus: 52kg",
+      te: "నైట్రోజన్: 58కిలో, ఫాస్ఫరస్: 52కిలో"
+    },
+    Black: {
+      en: "Nitrogen: 62kg, Potassium: 50kg",
+      te: "నైట్రోజన్: 62కిలో, పొటాషియం: 50కిలో"
+    },
+    Red: {
+      en: "Nitrogen: 60kg, Phosphorus: 48kg",
+      te: "నైట్రోజన్: 60కిలో, ఫాస్ఫరస్: 48కిలో"
+    },
+    Alluvial: {
+      en: "Nitrogen: 59kg, Potassium: 49kg",
+      te: "నైట్రోజన్: 59కిలో, పొటాషియం: 49కిలో"
+    }
+  },
+  // Add more crops as needed
+};
+
+let currentLang = 'en';
+
+// Function to switch language
+function switchLanguage(lang) {
+  currentLang = lang;
+
+  document.getElementById('title').textContent = lang === 'en' ? "🌱 Fertilizer Usage Optimizer" : "🌱 ఎరువుల వాడుక ఆప్టిమైజర్";
+
+  document.getElementById('labelCrop').textContent = lang === 'en' ? "Select Crop:" : "పంటను ఎంచుకోండి:";
+  document.getElementById('labelSoil').textContent = lang === 'en' ? "Select Soil Type:" : "మట్టిని ఎంచుకోండి:";
+  document.getElementById('labelAcres').textContent = lang === 'en' ? "Acres of Land:" : "ఎకరాల భూమి:";
+  document.getElementById('labelDistrict').textContent = lang === 'en' ? "District:" : "జిల్లా:";
+  document.getElementById('labelState').textContent = lang === 'en' ? "State:" : "రాష్ట్రం:";
+  document.getElementById('submitBtn').textContent = lang === 'en' ? "Get Recommendation" : "సిఫారసులు పొందండి";
+
+  document.querySelectorAll('select option').forEach(opt => {
+    opt.textContent = lang === 'en' ? opt.getAttribute('data-en') : opt.getAttribute('data-te');
+  });
+
+  document.getElementById('acres').placeholder = lang === 'en' ? "Enter acres of land" : "భూమి ఎకరాలు నమోదు చేయండి";
+
+  document.getElementById('toggleLangBtn').textContent = lang === 'en' ? "తెలుగులోకి మార్చండి (Switch to Telugu)" : "Switch to English (ఆంగ్లానికి మార్చండి)";
+
+  // Clear recommendation when language changes
+  document.getElementById('recommendation').innerHTML = '';
+}
+
+// Toggle language button click event
+document.getElementById('toggleLangBtn').addEventListener('click', () => {
+  switchLanguage(currentLang === 'en' ? 'te' : 'en');
+});
+
+// Form submit event
+document.getElementById('fertilizerForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const crop = e.target.crop.value;
+  const soil = e.target.soil.value;
+  const acres = e.target.acres.value;
+  const district = e.target.district.value;
+  const state = e.target.state.value;
+
+  if (!crop || !soil || !acres || !district || !state) {
+    alert(currentLang === 'en' ? "Please fill all fields." : "దయచేసి అన్ని ఫీల్డ్స్‌ను పూరించండి.");
+    return;
+  }
+
+  let recommendation = "";
+
+  if (
+    fertilizerData[crop] &&
+    fertilizerData[crop][soil] &&
+    fertilizerData[crop][soil][currentLang]
+  ) {
+    const baseFertilizer = fertilizerData[crop][soil][currentLang];
+    // Split fertilizers, multiply quantities by acres (simple scaling)
+    const fertList = baseFertilizer.split(",").map(f => {
+      const parts = f.trim().split(":");
+      if(parts.length === 2) {
+        const fertName = parts[0].trim();
+        const qtyStr = parts[1].trim(); // e.g. "50kg"
+        const qtyNum = parseFloat(qtyStr);
+        const unit = qtyStr.replace(qtyNum, '').trim();
+        const totalQty = (qtyNum * acres).toFixed(1);
+        return `${fertName}: ${totalQty}${unit}`;
+      }
+      return f.trim();
+    });
+
+    if(currentLang === 'en'){
+      recommendation = `
+        <h3>Fertilizer Recommendation for <b>${crop}</b> on <b>${soil}</b> soil</h3>
+        <p><b>District:</b> ${district}, <b>State:</b> ${state}</p>
+        <p><b>Land Area:</b> ${acres} acres</p>
+        <p>Based on your inputs, the recommended fertilizer quantities are:</p>
+        <ul>
+          ${fertList.map(item => `<li>${item}</li>`).join('')}
+        </ul>
+        <p><em>Note: Quantities are approximate and scaled by land area. For precise advice, consult a local agricultural expert.</em></p>
+      `;
+    } else {
+      recommendation = `
+        <h3><b>${crop}</b> పంటకు <b>${soil}</b> మట్టిపై ఎరువుల సిఫారసులు</h3>
+        <p><b>జిల్లా:</b> ${district}, <b>రాష్ట్రం:</b> ${state}</p>
+        <p><b>భూమి విస్తీర్ణం:</b> ${acres} ఎకరాలు</p>
+        <p>మీ ఇన్పుట్ ఆధారంగా, సిఫారసు చేయబడిన ఎరువుల పరిమాణాలు:</p>
+        <ul>
+          ${fertList.map(item => `<li>${item}</li>`).join('')}
+        </ul>
+        <p><em>గమనిక: ఈ పరిమాణాలు సుమారుగా ఉంటాయి మరియు భూమి విస్తీర్ణం ఆధారంగా గణించబడ్డాయి. ఖచ్చితమైన సిఫారసుల కోసం స్థానిక వ్యవసాయ నిపుణుల సంప్రదించండి.</em></p>
+      `;
+    }
+  } else {
+    recommendation = currentLang === 'en' 
+      ? `<p>Sorry, no fertilizer data found for <b>${crop}</b> on <b>${soil}</b> soil.</p>`
+      : `<p>క్షమించండి, ${crop} పంటకు ${soil} మట్టిపై ఎరువుల సమాచారం లేదు.</p>`;
+  }
+
+  document.getElementById('recommendation').innerHTML = recommendation;
+});
+
+// Initialize page with English
+switchLanguage('en');
+</script>
+
+</body>
+</html>
